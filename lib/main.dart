@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
           backgroundColor: Colors.black,
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10.0),
-            child: Question(),
+            child: QuizPage(),
           ),
         ),
       ),
@@ -21,30 +21,22 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Question extends StatefulWidget {
+class QuizPage extends StatefulWidget {
   @override
-  _QuestionState createState() => _QuestionState();
+  _QuizPageState createState() => _QuizPageState();
 }
 
-class _QuestionState extends State<Question> {
-  List<Icon> keper = [
-    Icon(
-      Icons.check,
-      color: Colors.green,
-    ),
-    Icon(
-      Icons.check,
-      color: Colors.green,
-    ),
-    Icon(
-      Icons.close,
-      color: Colors.red,
-    ),
-    Icon(
-      Icons.close,
-      color: Colors.red,
-    ),
+class _QuizPageState extends State<QuizPage> {
+  List<Icon> keper = [];
+  List<String> questions = [
+    '1- The sun is too close to us ?',
+    '2- Humans can breathe under the water ?',
+    '3- Cats are beautiful ?'
   ];
+
+  List<bool> answers = [false, false, true];
+
+  int quNo = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +50,7 @@ class _QuestionState extends State<Question> {
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                'Are You Crazy.',
+                questions[quNo],
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
@@ -78,16 +70,25 @@ class _QuestionState extends State<Question> {
               color: Colors.green,
               textColor: Colors.white,
               onPressed: () {
-                setState(
-                  () {
+                setState(() {
+                  quNo++;
+                  bool correct = answers[quNo];
+                  if (correct == true) {
                     keper.add(
                       Icon(
                         Icons.check,
                         color: Colors.green,
                       ),
                     );
-                  },
-                );
+                  } else {
+                    keper.add(
+                      Icon(
+                        Icons.close,
+                        color: Colors.red,
+                      ),
+                    );
+                  }
+                });
               },
             ),
           ),
@@ -105,24 +106,42 @@ class _QuestionState extends State<Question> {
               color: Colors.red,
               textColor: Colors.white,
               onPressed: () {
-                setState(
-                  () {
+                setState(() {
+               quNo++;
+                  bool correct = answers[quNo];
+                  if (correct == false) {
+                    keper.add(
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
+                    );
+                  } else {
                     keper.add(
                       Icon(
                         Icons.close,
                         color: Colors.red,
                       ),
                     );
-                  },
-                );
+                  }
+                });
               },
             ),
           ),
         ),
-        Row(
-          children: keper,
+        Expanded(
+          child: Row(
+            children: keper,
+          ),
         )
       ],
     );
+  }
+
+  void incNm() {
+    quNo++;
+    if (quNo == questions.length) {
+      quNo = 0;
+    }
   }
 }
