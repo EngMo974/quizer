@@ -27,6 +27,25 @@ class Question extends StatefulWidget {
 }
 
 class _QuestionState extends State<Question> {
+  List<Icon> keper = [
+    Icon(
+      Icons.check,
+      color: Colors.green,
+    ),
+    Icon(
+      Icons.check,
+      color: Colors.green,
+    ),
+    Icon(
+      Icons.close,
+      color: Colors.red,
+    ),
+    Icon(
+      Icons.close,
+      color: Colors.red,
+    ),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -58,7 +77,18 @@ class _QuestionState extends State<Question> {
               ),
               color: Colors.green,
               textColor: Colors.white,
-              onPressed: () {},
+              onPressed: () {
+                setState(
+                  () {
+                    keper.add(
+                      Icon(
+                        Icons.check,
+                        color: Colors.green,
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ),
@@ -74,12 +104,24 @@ class _QuestionState extends State<Question> {
               ),
               color: Colors.red,
               textColor: Colors.white,
-              onPressed: () {},
+              onPressed: () {
+                setState(
+                  () {
+                    keper.add(
+                      Icon(
+                        Icons.close,
+                        color: Colors.red,
+                      ),
+                    );
+                  },
+                );
+              },
             ),
           ),
         ),
-
-
+        Row(
+          children: keper,
+        )
       ],
     );
   }
