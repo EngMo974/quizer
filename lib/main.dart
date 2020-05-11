@@ -1,5 +1,6 @@
 import 'dart:ui';
-
+import 'package:quizer/quiz_brain.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -21,6 +22,8 @@ class MyApp extends StatelessWidget {
   }
 }
 
+QuizBrain quizBrain = new QuizBrain();
+
 class QuizPage extends StatefulWidget {
   @override
   _QuizPageState createState() => _QuizPageState();
@@ -28,15 +31,37 @@ class QuizPage extends StatefulWidget {
 
 class _QuizPageState extends State<QuizPage> {
   List<Icon> keper = [];
-  List<String> questions = [
-    '1- The sun is too close to us ?',
-    '2- Humans can breathe under the water ?',
-    '3- Cats are beautiful ?'
-  ];
 
-  List<bool> answers = [false, false, true];
+  void checkAnswer(bool pickAnswer) {
+    bool correctAnswer = quizBrain.getAnswer();
 
-  int quNo = 0;
+    setState(() {
+
+      if (quizBrain.isFinished() == true) {
+        Alert(
+                context: context,
+                title: 'Finished!',
+                desc: 'You\'ve reached the end of the quiz.')
+            .show();
+        quizBrain.rest();
+        keper = [];
+      } else {
+        if (pickAnswer == correctAnswer) {
+          keper.add(Icon(
+            Icons.check,
+            color: Colors.green,
+          ));
+        } else {
+          keper.add(Icon(
+            Icons.close,
+            color: Colors.red,
+          ));
+        }
+        quizBrain.nextQ();
+      }
+
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +75,7 @@ class _QuizPageState extends State<QuizPage> {
             padding: const EdgeInsets.all(10.0),
             child: Center(
               child: Text(
-                questions[quNo],
+                quizBrain.getQuestion(),
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.white, fontSize: 24),
               ),
@@ -70,25 +95,7 @@ class _QuizPageState extends State<QuizPage> {
               color: Colors.green,
               textColor: Colors.white,
               onPressed: () {
-                setState(() {
-                  quNo++;
-                  bool correct = answers[quNo];
-                  if (correct == true) {
-                    keper.add(
-                      Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                    );
-                  } else {
-                    keper.add(
-                      Icon(
-                        Icons.close,
-                        color: Colors.red,
-                      ),
-                    );
-                  }
-                });
+                checkAnswer(true);
               },
             ),
           ),
@@ -106,25 +113,7 @@ class _QuizPageState extends State<QuizPage> {
               color: Colors.red,
               textColor: Colors.white,
               onPressed: () {
-                setState(() {
-               quNo++;
-                  bool correct = answers[quNo];
-                  if (correct == false) {
-                    keper.add(
-                      Icon(
-                        Icons.check,
-                        color: Colors.green,
-                      ),
-                    );
-                  } else {
-                    keper.add(
-                      Icon(
-                        Icons.close,
-                        color: Colors.red,
-                      ),
-                    );
-                  }
-                });
+                checkAnswer(false);
               },
             ),
           ),
@@ -136,12 +125,5 @@ class _QuizPageState extends State<QuizPage> {
         )
       ],
     );
-  }
-
-  void incNm() {
-    quNo++;
-    if (quNo == questions.length) {
-      quNo = 0;
-    }
   }
 }
